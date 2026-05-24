@@ -42,7 +42,8 @@ export const Route = createFileRoute("/product/$id")({
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const product = getProduct(id)!;
   const [size, setSize] = useState(product.sizes[0]);
   const [color, setColor] = useState(product.colors[0].name);
   const [qty, setQty] = useState(1);
