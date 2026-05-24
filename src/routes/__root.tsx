@@ -73,10 +73,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Cippi — For every lovely moment" },
+      { title: "Cippy — For every lovely moment" },
       { name: "description", content: "Korean-inspired coquette fashion, handpicked for Malaysia's softest souls. Free shipping over RM150." },
-      { name: "author", content: "Cippi" },
-      { property: "og:title", content: "Cippi — For every lovely moment" },
+      { name: "author", content: "Cippy" },
+      { property: "og:title", content: "Cippy — For every lovely moment" },
       { property: "og:description", content: "Korean coquette fashion, made for Malaysia." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
