@@ -14,10 +14,10 @@ export const Route = createFileRoute("/shop")({
   validateSearch: shopSearch,
   head: () => ({
     meta: [
-      { title: "Shop — Cippi" },
-      { name: "description", content: "Browse all Cippi pieces. Dresses, tops, skirts and bows. Ships across Malaysia." },
-      { property: "og:title", content: "Shop — Cippi" },
-      { property: "og:description", content: "Browse all Cippi pieces. Dresses, tops, skirts and bows." },
+      { title: "Shop — Cippy" },
+      { name: "description", content: "Browse all Cippy pieces. Dresses, tops, skirts and bows. Ships across Malaysia." },
+      { property: "og:title", content: "Shop — Cippy" },
+      { property: "og:description", content: "Browse all Cippy pieces. Dresses, tops, skirts and bows." },
     ],
   }),
   component: Shop,
