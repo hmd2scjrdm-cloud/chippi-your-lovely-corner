@@ -1,23 +1,23 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { products, type Category } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { z } from "zod";
-import { fallback } from "@tanstack/zod-adapter";
+
+const sortValues = ["featured", "price-asc", "price-desc", "best", "new"] as const;
+type SortValue = (typeof sortValues)[number];
 
 const shopSearch = z.object({
-  cat: z.union([
-    z.enum(["Tops", "Dresses", "Skirts", "Bow Series", "new"]),
-    z.literal(""),
-  ]).optional(),
-  sort: fallback(
-    z.enum(["featured", "price-asc", "price-desc", "best", "new"]),
-    "featured",
-  ).default("featured"),
+  cat: z
+    .union([z.enum(["Tops", "Dresses", "Skirts", "Bow Series", "new"]), z.literal("")])
+    .optional(),
+  sort: z.enum(sortValues).optional(),
 });
 
+type ShopSearch = z.infer<typeof shopSearch>;
+
 export const Route = createFileRoute("/shop")({
-  validateSearch: shopSearch,
+  validateSearch: (s): ShopSearch => shopSearch.parse(s),
   head: () => ({
     meta: [
       { title: "Shop — Cippy" },
@@ -31,17 +31,19 @@ export const Route = createFileRoute("/shop")({
 
 const categories: (Category | "All" | "new")[] = ["All", "new", "Tops", "Dresses", "Skirts", "Bow Series"];
 
-const sortOptions = [
+const sortOptions: { value: SortValue; label: string }[] = [
   { value: "featured", label: "Featured" },
   { value: "new", label: "New arrivals" },
   { value: "best", label: "Best sellers" },
   { value: "price-asc", label: "Price: Low to High" },
   { value: "price-desc", label: "Price: High to Low" },
-] as const;
+];
 
 function Shop() {
   const { cat, sort } = Route.useSearch();
+  const navigate = useNavigate({ from: "/shop" });
   const active = cat || "All";
+  const activeSort: SortValue = sort ?? "featured";
 
   const filtered = useMemo(() => {
     const base = products.filter((p) => {
@@ -50,7 +52,7 @@ function Shop() {
       return p.category === cat;
     });
     const sorted = [...base];
-    switch (sort) {
+    switch (activeSort) {
       case "price-asc":
         sorted.sort((a, b) => a.price - b.price);
         break;
@@ -65,7 +67,7 @@ function Shop() {
         break;
     }
     return sorted;
-  }, [cat, sort]);
+  }, [cat, activeSort]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-8 py-10 md:py-16 animate-fade-in">
@@ -82,7 +84,7 @@ function Shop() {
             <Link
               key={c}
               to="/shop"
-              search={(prev) => ({
+              search={(prev: ShopSearch) => ({
                 ...prev,
                 cat: c === "All" ? undefined : (c as Exclude<typeof c, "All">),
               })}
@@ -103,15 +105,15 @@ function Shop() {
         <label className="flex items-center gap-2 text-sm">
           <span className="text-muted-foreground hidden sm:inline">Sort by</span>
           <select
-            value={sort}
+            value={activeSort}
             onChange={(e) => {
-              const next = e.target.value as typeof sort;
-              const url = new URL(window.location.href);
-              if (next === "featured") url.searchParams.delete("sort");
-              else url.searchParams.set("sort", next);
-              window.history.replaceState({}, "", url.toString());
-              // force navigation through router
-              window.location.assign(url.toString());
+              const next = e.target.value as SortValue;
+              navigate({
+                search: (prev: ShopSearch) => ({
+                  ...prev,
+                  sort: next === "featured" ? undefined : next,
+                }),
+              });
             }}
             className="bg-transparent border border-border rounded-full px-4 py-2 text-sm focus:outline-none focus:border-foreground/40 cursor-pointer"
           >
