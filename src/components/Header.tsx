@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ShoppingBag, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/lib/cart";
+import logo from "@/assets/logo.jpeg";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -24,9 +25,8 @@ export function Header() {
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
 
-        <Link to="/" className="serif text-2xl tracking-wide text-foreground">
-          cippi
-          <span className="text-primary">.</span>
+        <Link to="/" aria-label="Cippy home" className="flex items-center">
+          <img src={logo} alt="Cippy" className="h-10 md:h-12 w-auto object-contain" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
