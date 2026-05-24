@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="border-t border-border/60 mt-20 bg-secondary/30">
       <div className="mx-auto max-w-7xl px-4 md:px-8 py-12 grid gap-10 md:grid-cols-4 text-sm">
         <div>
-          <div className="serif text-2xl mb-3">chippi<span className="text-primary">.</span></div>
+          <div className="serif text-2xl mb-3">cippi<span className="text-primary">.</span></div>
           <p className="text-muted-foreground leading-relaxed">
             For every lovely moment. Made in KL, designed for the soft and the strong.
           </p>
@@ -31,7 +31,7 @@ export function Footer() {
         <div>
           <h4 className="text-xs uppercase tracking-widest mb-3 text-foreground/70">Follow</h4>
           <a href="#" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground">
-            <Instagram className="h-4 w-4" /> @chippi.my
+            <Instagram className="h-4 w-4" /> @cippi.my
           </a>
           <p className="mt-4 text-xs text-muted-foreground">
             Ships across Malaysia via J&T, NinjaVan, PosLaju.
@@ -39,7 +39,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-border/60 py-5 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Chippi. All rights reserved.
+        © {new Date().getFullYear()} Cippi. All rights reserved.
       </div>
     </footer>
   );

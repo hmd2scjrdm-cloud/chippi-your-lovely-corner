@@ -6,10 +6,10 @@ import { useState } from "react";
 export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
-      { title: "Your Bag — Chippi" },
-      { name: "description", content: "Review your Chippi bag before checkout. Free Malaysia shipping over RM150." },
-      { property: "og:title", content: "Your Bag — Chippi" },
-      { property: "og:description", content: "Review your Chippi bag before checkout." },
+      { title: "Your Bag — Cippi" },
+      { name: "description", content: "Review your Cippi bag before checkout. Free Malaysia shipping over RM150." },
+      { property: "og:title", content: "Your Bag — Cippi" },
+      { property: "og:description", content: "Review your Cippi bag before checkout." },
     ],
   }),
   component: CartPage,

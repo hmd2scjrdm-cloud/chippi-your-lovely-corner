@@ -59,6 +59,6 @@ export const useCart = create<CartState>()(
       count: () => get().items.reduce((sum, i) => sum + i.qty, 0),
       subtotal: () => get().items.reduce((sum, i) => sum + i.price * i.qty, 0),
     }),
-    { name: "chippi-cart" }
+    { name: "cippi-cart" }
   )
 );

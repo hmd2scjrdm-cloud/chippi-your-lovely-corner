@@ -13,10 +13,10 @@ import ig6 from "@/assets/ig6.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Chippi — Korean coquette fashion in Malaysia" },
-      { name: "description", content: "Discover Chippi's newest dresses, bows and pearl-button knits. Made for every lovely moment." },
-      { property: "og:title", content: "Chippi — Korean coquette fashion in Malaysia" },
-      { property: "og:description", content: "Discover Chippi's newest dresses, bows and pearl-button knits." },
+      { title: "Cippi — Korean coquette fashion in Malaysia" },
+      { name: "description", content: "Discover Cippi's newest dresses, bows and pearl-button knits. Made for every lovely moment." },
+      { property: "og:title", content: "Cippi — Korean coquette fashion in Malaysia" },
+      { property: "og:description", content: "Discover Cippi's newest dresses, bows and pearl-button knits." },
       { property: "og:image", content: hero },
     ],
   }),
@@ -36,7 +36,7 @@ function Home() {
       <section className="relative h-[88vh] min-h-[560px] w-full overflow-hidden">
         <img
           src={hero}
-          alt="Chippi spring collection"
+          alt="Cippi spring collection"
           width={1920}
           height={1080}
           className="absolute inset-0 h-full w-full object-cover"
@@ -135,12 +135,12 @@ function Home() {
       {/* Packaging story */}
       <section className="bg-secondary/40 py-16 md:py-24">
         <div className="mx-auto max-w-7xl px-4 md:px-8 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-          <img src={packaging} alt="Chippi packaging" loading="lazy" width={1200} height={900} className="w-full rounded-md shadow-soft" />
+          <img src={packaging} alt="Cippi packaging" loading="lazy" width={1200} height={900} className="w-full rounded-md shadow-soft" />
           <div>
             <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">The Unboxing</p>
             <h2 className="serif text-3xl md:text-4xl leading-tight">A little ceremony,<br/>in every parcel.</h2>
             <p className="mt-5 text-muted-foreground leading-relaxed">
-              Every Chippi piece arrives wrapped in tissue, tied with a satin ribbon, and folded inside our blush-pink box. Because the moment you open it is part of the outfit too.
+              Every Cippi piece arrives wrapped in tissue, tied with a satin ribbon, and folded inside our blush-pink box. Because the moment you open it is part of the outfit too.
             </p>
           </div>
         </div>
@@ -150,12 +150,12 @@ function Home() {
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-16 md:py-24">
         <div className="text-center mb-10">
           <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Tag us</p>
-          <h2 className="serif text-3xl md:text-4xl">@chippi.my</h2>
+          <h2 className="serif text-3xl md:text-4xl">@cippi.my</h2>
         </div>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-1 md:gap-2">
           {igPosts.map((src, i) => (
             <a key={i} href="#" className="aspect-square overflow-hidden rounded-sm group">
-              <img src={src} alt={`Chippi community post ${i + 1}`} loading="lazy" width={600} height={600} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <img src={src} alt={`Cippi community post ${i + 1}`} loading="lazy" width={600} height={600} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
             </a>
           ))}
         </div>

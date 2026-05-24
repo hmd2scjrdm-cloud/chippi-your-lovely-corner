@@ -25,7 +25,7 @@ export function Header() {
         </button>
 
         <Link to="/" className="serif text-2xl tracking-wide text-foreground">
-          chippi
+          cippi
           <span className="text-primary">.</span>
         </Link>
 
