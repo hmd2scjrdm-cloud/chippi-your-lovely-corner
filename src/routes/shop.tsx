@@ -1,13 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { products, type Category } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { z } from "zod";
+import { fallback } from "@tanstack/zod-adapter";
 
 const shopSearch = z.object({
   cat: z.union([
     z.enum(["Tops", "Dresses", "Skirts", "Bow Series", "new"]),
     z.literal(""),
   ]).optional(),
+  sort: fallback(
+    z.enum(["featured", "price-asc", "price-desc", "best", "new"]),
+    "featured",
+  ).default("featured"),
 });
 
 export const Route = createFileRoute("/shop")({
@@ -25,15 +31,41 @@ export const Route = createFileRoute("/shop")({
 
 const categories: (Category | "All" | "new")[] = ["All", "new", "Tops", "Dresses", "Skirts", "Bow Series"];
 
+const sortOptions = [
+  { value: "featured", label: "Featured" },
+  { value: "new", label: "New arrivals" },
+  { value: "best", label: "Best sellers" },
+  { value: "price-asc", label: "Price: Low to High" },
+  { value: "price-desc", label: "Price: High to Low" },
+] as const;
+
 function Shop() {
-  const { cat } = Route.useSearch();
+  const { cat, sort } = Route.useSearch();
   const active = cat || "All";
 
-  const filtered = products.filter((p) => {
-    if (!cat || cat === "") return true;
-    if (cat === "new") return p.isNew;
-    return p.category === cat;
-  });
+  const filtered = useMemo(() => {
+    const base = products.filter((p) => {
+      if (!cat || cat === "") return true;
+      if (cat === "new") return p.isNew;
+      return p.category === cat;
+    });
+    const sorted = [...base];
+    switch (sort) {
+      case "price-asc":
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      case "best":
+        sorted.sort((a, b) => Number(!!b.isBest) - Number(!!a.isBest));
+        break;
+      case "new":
+        sorted.sort((a, b) => Number(!!b.isNew) - Number(!!a.isNew));
+        break;
+    }
+    return sorted;
+  }, [cat, sort]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-8 py-10 md:py-16 animate-fade-in">
@@ -42,7 +74,7 @@ function Shop() {
         <h1 className="serif text-4xl md:text-5xl">All pieces</h1>
       </div>
 
-      <div className="flex gap-2 mb-8 md:mb-10 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none">
+      <div className="flex gap-2 mb-6 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none">
         {categories.map((c) => {
           const isActive = active === c;
           const label = c === "new" ? "New" : c;
@@ -50,7 +82,10 @@ function Shop() {
             <Link
               key={c}
               to="/shop"
-              search={c === "All" ? {} : { cat: c as Exclude<typeof c, "All"> }}
+              search={(prev) => ({
+                ...prev,
+                cat: c === "All" ? undefined : (c as Exclude<typeof c, "All">),
+              })}
               className={`whitespace-nowrap px-4 py-2 text-sm rounded-full border transition-colors ${
                 isActive
                   ? "bg-foreground text-background border-foreground"
@@ -61,6 +96,32 @@ function Shop() {
             </Link>
           );
         })}
+      </div>
+
+      <div className="flex items-center justify-between mb-8 md:mb-10">
+        <p className="text-xs text-muted-foreground">{filtered.length} pieces</p>
+        <label className="flex items-center gap-2 text-sm">
+          <span className="text-muted-foreground hidden sm:inline">Sort by</span>
+          <select
+            value={sort}
+            onChange={(e) => {
+              const next = e.target.value as typeof sort;
+              const url = new URL(window.location.href);
+              if (next === "featured") url.searchParams.delete("sort");
+              else url.searchParams.set("sort", next);
+              window.history.replaceState({}, "", url.toString());
+              // force navigation through router
+              window.location.assign(url.toString());
+            }}
+            className="bg-transparent border border-border rounded-full px-4 py-2 text-sm focus:outline-none focus:border-foreground/40 cursor-pointer"
+          >
+            {sortOptions.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       {filtered.length === 0 ? (
