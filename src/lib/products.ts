@@ -13,12 +13,29 @@ import p6b from "@/assets/p6b.jpg";
 
 export type Category = "Tops" | "Dresses" | "Skirts" | "Bow Series";
 
+/** Curated story series — a product can belong to several at once. */
+export const collectionList = [
+  "Coquette Garden",
+  "Sunday Brunch",
+  "Café Date",
+  "Office Soft",
+] as const;
+export type Collection = (typeof collectionList)[number];
+
+export const collectionInfo: Record<Collection, { tagline: string }> = {
+  "Coquette Garden": { tagline: "Bows, ribbons, dusty pinks." },
+  "Sunday Brunch": { tagline: "Soft layers for slow mornings." },
+  "Café Date": { tagline: "Latte tones, easy silhouettes." },
+  "Office Soft": { tagline: "Polished, never stiff." },
+};
+
 export interface Product {
   id: string;
   name: string;
   price: number; // in RM
   images: [string, string];
   category: Category;
+  collections?: Collection[];
   sizes: string[];
   colors: { name: string; hex: string }[];
   description: string;
@@ -61,6 +78,7 @@ export const products: Product[] = [
     staffReview: "Staff A (160cm / 48kg) wears S — relaxed through the shoulder, true to size.",
     isNew: true,
     isBest: true,
+    collections: ["Coquette Garden", "Sunday Brunch"],
     pairsWith: [{ id: "pleated-mini-skirt", label: "Skirt in photo" }],
   },
   {
@@ -78,6 +96,7 @@ export const products: Product[] = [
     modelInfo: "Model is 165cm / 50kg, wearing size S",
     staffReview: "Staff B (158cm / 45kg) sizes down to XS for a tailored waist.",
     isNew: true,
+    collections: ["Coquette Garden", "Sunday Brunch", "Office Soft"],
     pairsWith: [{ id: "bow-collar-blouse", label: "Top in photo" }],
   },
   {
@@ -95,6 +114,7 @@ export const products: Product[] = [
     modelInfo: "Model is 170cm / 52kg, wearing size S",
     staffReview: "Staff C (163cm / 50kg) wears S — true to size, ties at the natural waist.",
     isBest: true,
+    collections: ["Coquette Garden", "Sunday Brunch"],
   },
   {
     id: "pearl-cardigan",
@@ -111,6 +131,7 @@ export const products: Product[] = [
     modelInfo: "Model is 167cm / 49kg, wearing One Size",
     staffReview: "Fits XS to M comfortably — generous through the arm, cropped at the waist.",
     isNew: true,
+    collections: ["Café Date", "Office Soft"],
   },
   {
     id: "satin-bow-set",
@@ -130,6 +151,7 @@ export const products: Product[] = [
     modelInfo: "One size — adjustable clip",
     staffReview: "We all keep one in our bag. Pin to a tote, a ponytail, or a cardigan.",
     isBest: true,
+    collections: ["Coquette Garden"],
   },
   {
     id: "checkered-mini-skirt",
@@ -145,6 +167,7 @@ export const products: Product[] = [
     care: "Dry clean recommended",
     modelInfo: "Model is 166cm / 47kg, wearing size S",
     staffReview: "Staff D (160cm / 52kg) wears S — sits at the natural waist.",
+    collections: ["Café Date", "Office Soft"],
   },
 ];
 
