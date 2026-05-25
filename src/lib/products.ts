@@ -131,6 +131,7 @@ export const products: Product[] = [
     modelInfo: "Model is 167cm / 49kg, wearing One Size",
     staffReview: "Fits XS to M comfortably — generous through the arm, cropped at the waist.",
     isNew: true,
+    collections: ["Café Date", "Office Soft"],
   },
   {
     id: "satin-bow-set",
