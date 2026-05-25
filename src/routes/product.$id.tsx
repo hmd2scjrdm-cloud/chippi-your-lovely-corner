@@ -72,7 +72,7 @@ function ProductPage() {
       <div className="mx-auto max-w-7xl px-4 md:px-8 py-6 md:py-10 grid md:grid-cols-2 gap-8 md:gap-16">
         {/* Gallery */}
         <div>
-          <div className="aspect-square overflow-hidden rounded-md bg-secondary/30 mb-3">
+          <div className="relative aspect-square overflow-hidden rounded-md bg-secondary/30 mb-3">
             <img
               src={product.images[activeImg]}
               alt={product.name}
@@ -80,6 +80,25 @@ function ProductPage() {
               height={800}
               className="h-full w-full object-cover"
             />
+            {product.pairsWith && product.pairsWith.length > 0 && (
+              <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
+                {product.pairsWith.map((p) => {
+                  const target = getProduct(p.id);
+                  if (!target) return null;
+                  return (
+                    <Link
+                      key={p.id}
+                      to="/product/$id"
+                      params={{ id: p.id }}
+                      className="group/tag flex items-center gap-2 bg-background/90 backdrop-blur-sm pl-2 pr-3 py-1.5 rounded-full shadow-sm hover:bg-background transition-colors"
+                    >
+                      <img src={target.images[0]} alt="" className="h-7 w-7 rounded-full object-cover" />
+                      <span className="text-[11px] tracking-wide">{p.label} →</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
           <div className="flex gap-2">
             {product.images.map((src, i) => (

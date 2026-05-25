@@ -28,6 +28,8 @@ export interface Product {
   staffReview: string;
   isNew?: boolean;
   isBest?: boolean;
+  /** Other product IDs shown together in this photo (e.g. matching set pieces). */
+  pairsWith?: { id: string; label: string }[];
 }
 
 export const products: Product[] = [
@@ -50,6 +52,7 @@ export const products: Product[] = [
     staffReview: "Staff A (160cm / 48kg) wears S — relaxed through the shoulder, true to size.",
     isNew: true,
     isBest: true,
+    pairsWith: [{ id: "pleated-mini-skirt", label: "Skirt in photo" }],
   },
   {
     id: "pleated-mini-skirt",
@@ -66,6 +69,7 @@ export const products: Product[] = [
     modelInfo: "Model is 165cm / 50kg, wearing size S",
     staffReview: "Staff B (158cm / 45kg) sizes down to XS for a tailored waist.",
     isNew: true,
+    pairsWith: [{ id: "bow-collar-blouse", label: "Top in photo" }],
   },
   {
     id: "dusty-pink-dress",
