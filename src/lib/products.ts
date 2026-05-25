@@ -13,12 +13,29 @@ import p6b from "@/assets/p6b.jpg";
 
 export type Category = "Tops" | "Dresses" | "Skirts" | "Bow Series";
 
+/** Curated story series — a product can belong to several at once. */
+export const collectionList = [
+  "Coquette Garden",
+  "Sunday Brunch",
+  "Café Date",
+  "Office Soft",
+] as const;
+export type Collection = (typeof collectionList)[number];
+
+export const collectionInfo: Record<Collection, { tagline: string }> = {
+  "Coquette Garden": { tagline: "Bows, ribbons, dusty pinks." },
+  "Sunday Brunch": { tagline: "Soft layers for slow mornings." },
+  "Café Date": { tagline: "Latte tones, easy silhouettes." },
+  "Office Soft": { tagline: "Polished, never stiff." },
+};
+
 export interface Product {
   id: string;
   name: string;
   price: number; // in RM
   images: [string, string];
   category: Category;
+  collections?: Collection[];
   sizes: string[];
   colors: { name: string; hex: string }[];
   description: string;
