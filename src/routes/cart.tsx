@@ -27,6 +27,8 @@ function CartPage() {
   const updateQty = useCart((s) => s.updateQty);
   const remove = useCart((s) => s.remove);
   const subtotal = useCart((s) => s.subtotal());
+  const appliedBundles = useCart((s) => s.appliedBundles());
+  const bundleDiscount = useCart((s) => s.bundleDiscount());
   const [pay, setPay] = useState("tng");
 
   const shipping = subtotal === 0 ? 0 : subtotal >= 150 ? 0 : 8;
