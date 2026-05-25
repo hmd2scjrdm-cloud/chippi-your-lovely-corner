@@ -78,6 +78,7 @@ export const products: Product[] = [
     staffReview: "Staff A (160cm / 48kg) wears S — relaxed through the shoulder, true to size.",
     isNew: true,
     isBest: true,
+    collections: ["Coquette Garden", "Sunday Brunch"],
     pairsWith: [{ id: "pleated-mini-skirt", label: "Skirt in photo" }],
   },
   {
