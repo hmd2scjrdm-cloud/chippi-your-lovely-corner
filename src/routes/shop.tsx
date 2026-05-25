@@ -41,7 +41,7 @@ const sortOptions: { value: SortValue; label: string }[] = [
 ];
 
 function Shop() {
-  const { cat, collection, sort } = Route.useSearch();
+  const { cat, collection, sort } = Route.useSearch() as ShopSearch;
   const navigate = useNavigate({ from: "/shop" });
   const active = cat || "All";
   const activeSort: SortValue = sort ?? "featured";
