@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { bundles, getBundle, bundleMemberPriceSum } from "./products";
 
 export interface CartItem {
   productId: string;
@@ -9,16 +10,36 @@ export interface CartItem {
   size: string;
   color: string;
   qty: number;
+  /** If present, this item belongs to a combo SKU. Items sharing the same
+   *  bundleId + bundleGroup are treated as one set for discount + display. */
+  bundleId?: string;
+  bundleGroup?: string;
+}
+
+export interface BundleApplied {
+  bundleId: string;
+  bundleGroup: string;
+  name: string;
+  productIds: string[];
+  /** RM discount applied for this set instance. */
+  discount: number;
+  /** Sum of member prices before discount, for this instance. */
+  fullPrice: number;
 }
 
 interface CartState {
   items: CartItem[];
   add: (item: CartItem) => void;
+  addBundle: (bundleId: string, members: Omit<CartItem, "bundleId" | "bundleGroup">[]) => void;
   remove: (productId: string, size: string, color: string) => void;
   updateQty: (productId: string, size: string, color: string, qty: number) => void;
   clear: () => void;
   count: () => number;
   subtotal: () => number;
+  /** Total discount across all complete bundle instances in the cart. */
+  bundleDiscount: () => number;
+  /** Complete bundle instances detected in the cart. */
+  appliedBundles: () => BundleApplied[];
 }
 
 const keyMatch = (a: CartItem, productId: string, size: string, color: string) =>
