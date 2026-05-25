@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { bundles, getBundle, bundleMemberPriceSum } from "./products";
+import { getBundle, bundleMemberPriceSum } from "./products";
 
 export interface CartItem {
   productId: string;
