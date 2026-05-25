@@ -28,6 +28,8 @@ export interface Product {
   staffReview: string;
   isNew?: boolean;
   isBest?: boolean;
+  /** Other product IDs shown together in this photo (e.g. matching set pieces). */
+  pairsWith?: { id: string; label: string }[];
 }
 
 export const products: Product[] = [
