@@ -76,9 +76,51 @@ export const useCart = create<CartState>()(
               keyMatch(i, productId, size, color) ? { ...i, qty: Math.max(1, qty) } : i
             ),
         })),
+      addBundle: (bundleId, members) =>
+        set((state) => {
+          const bundleGroup = `${bundleId}-${Date.now()}`;
+          const tagged: CartItem[] = members.map((m) => ({
+            ...m,
+            bundleId,
+            bundleGroup,
+          }));
+          return { items: [...state.items, ...tagged] };
+        }),
       clear: () => set({ items: [] }),
       count: () => get().items.reduce((sum, i) => sum + i.qty, 0),
-      subtotal: () => get().items.reduce((sum, i) => sum + i.price * i.qty, 0),
+      subtotal: () =>
+        get().items.reduce((sum, i) => sum + i.price * i.qty, 0) -
+        get().bundleDiscount(),
+      appliedBundles: () => {
+        const groups = new Map<string, CartItem[]>();
+        for (const it of get().items) {
+          if (!it.bundleId || !it.bundleGroup) continue;
+          const key = it.bundleGroup;
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key)!.push(it);
+        }
+        const applied: BundleApplied[] = [];
+        for (const [group, items] of groups) {
+          const bundleId = items[0].bundleId!;
+          const b = getBundle(bundleId);
+          if (!b) continue;
+          const hasAll = b.productIds.every((pid) =>
+            items.some((i) => i.productId === pid && i.qty >= 1)
+          );
+          if (!hasAll) continue;
+          applied.push({
+            bundleId,
+            bundleGroup: group,
+            name: b.name,
+            productIds: b.productIds,
+            discount: b.discount,
+            fullPrice: bundleMemberPriceSum(b),
+          });
+        }
+        return applied;
+      },
+      bundleDiscount: () =>
+        get().appliedBundles().reduce((sum, b) => sum + b.discount, 0),
     }),
     { name: "cippy-cart" }
   )
