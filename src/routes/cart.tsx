@@ -94,11 +94,6 @@ function CartPage() {
         <aside className="md:sticky md:top-24 self-start">
           <div className="bg-secondary/40 rounded-md p-6">
             <h2 className="serif text-xl mb-5">Order Summary</h2>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Subtotal</span>
-                <span>RM {subtotal.toFixed(2)}</span>
-              </div>
             {appliedBundles.length > 0 && (
               <div className="mb-4 rounded-sm border border-primary/30 bg-primary/5 p-3 space-y-2">
                 {appliedBundles.map((b) => (
