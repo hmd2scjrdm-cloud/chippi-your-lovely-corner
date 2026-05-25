@@ -99,6 +99,32 @@ function CartPage() {
                 <span className="text-muted-foreground">Subtotal</span>
                 <span>RM {subtotal.toFixed(2)}</span>
               </div>
+            {appliedBundles.length > 0 && (
+              <div className="mb-4 rounded-sm border border-primary/30 bg-primary/5 p-3 space-y-2">
+                {appliedBundles.map((b) => (
+                  <div key={b.bundleGroup} className="flex items-start justify-between gap-2 text-xs">
+                    <div>
+                      <p className="font-medium">{b.name}</p>
+                      <p className="text-[10px] uppercase tracking-widest text-primary mt-0.5">This is a set · SKU {b.bundleId}</p>
+                    </div>
+                    {b.discount > 0 && (
+                      <span className="text-primary whitespace-nowrap">−RM {b.discount.toFixed(2)}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Subtotal</span>
+                <span>RM {(subtotal + bundleDiscount).toFixed(2)}</span>
+              </div>
+              {bundleDiscount > 0 && (
+                <div className="flex justify-between text-primary">
+                  <span>Set discount</span>
+                  <span>−RM {bundleDiscount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
                 <span>{shipping === 0 ? "Free" : `RM ${shipping.toFixed(2)}`}</span>
@@ -114,6 +140,7 @@ function CartPage() {
               <span>Total</span>
               <span className="serif text-lg">RM {total.toFixed(2)}</span>
             </div>
+
 
             <p className="text-xs uppercase tracking-widest text-foreground/70 mb-3">Payment</p>
             <div className="space-y-2 mb-5">
