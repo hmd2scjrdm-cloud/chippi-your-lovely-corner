@@ -114,6 +114,7 @@ export const products: Product[] = [
     modelInfo: "Model is 170cm / 52kg, wearing size S",
     staffReview: "Staff C (163cm / 50kg) wears S — true to size, ties at the natural waist.",
     isBest: true,
+    collections: ["Coquette Garden", "Sunday Brunch"],
   },
   {
     id: "pearl-cardigan",
