@@ -209,6 +209,46 @@ function ProductPage() {
             </button>
           </div>
 
+          {/* Bundle / Combo SKU */}
+          {bundle && bundleMembers.length > 0 && (
+            <div className="mt-6 rounded-md border border-primary/40 bg-primary/5 p-5">
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <div>
+                  <p className="text-[11px] uppercase tracking-widest text-primary">Shop the set</p>
+                  <h3 className="serif text-lg mt-0.5">{bundle.name}</h3>
+                </div>
+                <div className="text-right">
+                  {bundle.discount > 0 && (
+                    <p className="text-xs text-muted-foreground line-through">RM {bundleFull.toFixed(2)}</p>
+                  )}
+                  <p className="serif text-lg">RM {bundleTotal.toFixed(2)}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 mb-4">
+                {bundleMembers.map((m, i) => (
+                  <div key={m!.id} className="flex items-center gap-2">
+                    {i > 0 && <span className="text-muted-foreground">+</span>}
+                    <img src={m!.images[0]} alt={m!.name} className="h-12 w-12 rounded-sm object-cover" />
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={handleAddBundle}
+                className="w-full bg-foreground text-background py-2.5 text-sm rounded-sm hover:bg-foreground/90 transition-colors flex items-center justify-center gap-2"
+              >
+                {bundleAdded ? (
+                  <><Check className="h-4 w-4" /> Set added</>
+                ) : bundle.discount > 0 ? (
+                  `Add set · save RM ${bundle.discount.toFixed(2)}`
+                ) : (
+                  "Add set to cart"
+                )}
+              </button>
+              <p className="text-[11px] text-muted-foreground mt-2">SKU {bundle.id} · default size/color, adjust in cart</p>
+            </div>
+          )}
+
+
           {/* Size guide */}
           <div id="size-guide" className="mt-12 border-t border-border pt-8">
             <h3 className="serif text-xl mb-4">Fit & Size Guide</h3>
