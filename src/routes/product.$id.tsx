@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { Minus, Plus, Check } from "lucide-react";
-import { getProduct, products } from "@/lib/products";
+import { getProduct, products, findBundleFor, bundlePrice, bundleMemberPriceSum } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { useCart } from "@/lib/cart";
 
