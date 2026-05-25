@@ -67,6 +67,33 @@ function ProductPage() {
     setTimeout(() => setAdded(false), 1800);
   };
 
+  const bundle = findBundleFor(product.id);
+  const bundleMembers = bundle
+    ? bundle.productIds.map((pid) => getProduct(pid)).filter(Boolean)
+    : [];
+  const bundleFull = bundle ? bundleMemberPriceSum(bundle) : 0;
+  const bundleTotal = bundle ? bundlePrice(bundle) : 0;
+  const addBundle = useCart((s) => s.addBundle);
+  const [bundleAdded, setBundleAdded] = useState(false);
+
+  const handleAddBundle = () => {
+    if (!bundle) return;
+    addBundle(
+      bundle.id,
+      bundleMembers.map((p) => ({
+        productId: p!.id,
+        name: p!.name,
+        price: p!.price,
+        image: p!.images[0],
+        size: p!.sizes[0],
+        color: p!.colors[0].name,
+        qty: 1,
+      }))
+    );
+    setBundleAdded(true);
+    setTimeout(() => setBundleAdded(false), 1800);
+  };
+
   return (
     <div className="animate-fade-in pb-32 md:pb-16">
       <div className="mx-auto max-w-7xl px-4 md:px-8 py-6 md:py-10 grid md:grid-cols-2 gap-8 md:gap-16">
