@@ -27,6 +27,8 @@ function CartPage() {
   const updateQty = useCart((s) => s.updateQty);
   const remove = useCart((s) => s.remove);
   const subtotal = useCart((s) => s.subtotal());
+  const appliedBundles = useCart((s) => s.appliedBundles());
+  const bundleDiscount = useCart((s) => s.bundleDiscount());
   const [pay, setPay] = useState("tng");
 
   const shipping = subtotal === 0 ? 0 : subtotal >= 150 ? 0 : 8;
@@ -61,6 +63,11 @@ function CartPage() {
                     <p className="text-xs text-muted-foreground mt-1">
                       {it.color} · {it.size}
                     </p>
+                    {it.bundleId && (
+                      <span className="inline-block mt-1.5 text-[10px] uppercase tracking-widest text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm">
+                        Part of a set
+                      </span>
+                    )}
                   </div>
                   <button onClick={() => remove(it.productId, it.size, it.color)} aria-label="Remove" className="text-muted-foreground hover:text-foreground">
                     <X className="h-4 w-4" />
@@ -87,11 +94,32 @@ function CartPage() {
         <aside className="md:sticky md:top-24 self-start">
           <div className="bg-secondary/40 rounded-md p-6">
             <h2 className="serif text-xl mb-5">Order Summary</h2>
+            {appliedBundles.length > 0 && (
+              <div className="mb-4 rounded-sm border border-primary/30 bg-primary/5 p-3 space-y-2">
+                {appliedBundles.map((b) => (
+                  <div key={b.bundleGroup} className="flex items-start justify-between gap-2 text-xs">
+                    <div>
+                      <p className="font-medium">{b.name}</p>
+                      <p className="text-[10px] uppercase tracking-widest text-primary mt-0.5">This is a set · SKU {b.bundleId}</p>
+                    </div>
+                    {b.discount > 0 && (
+                      <span className="text-primary whitespace-nowrap">−RM {b.discount.toFixed(2)}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>RM {subtotal.toFixed(2)}</span>
+                <span>RM {(subtotal + bundleDiscount).toFixed(2)}</span>
               </div>
+              {bundleDiscount > 0 && (
+                <div className="flex justify-between text-primary">
+                  <span>Set discount</span>
+                  <span>−RM {bundleDiscount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
                 <span>{shipping === 0 ? "Free" : `RM ${shipping.toFixed(2)}`}</span>
@@ -107,6 +135,7 @@ function CartPage() {
               <span>Total</span>
               <span className="serif text-lg">RM {total.toFixed(2)}</span>
             </div>
+
 
             <p className="text-xs uppercase tracking-widest text-foreground/70 mb-3">Payment</p>
             <div className="space-y-2 mb-5">

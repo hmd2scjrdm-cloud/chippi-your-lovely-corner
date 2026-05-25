@@ -32,6 +32,15 @@ export interface Product {
   pairsWith?: { id: string; label: string }[];
 }
 
+/** Curated combo SKUs — buy the look as a set with a small discount. */
+export interface Bundle {
+  id: string; // SKU
+  name: string;
+  productIds: string[];
+  /** Discount in RM off the sum of member prices. 0 = no discount, just grouped as a set. */
+  discount: number;
+}
+
 export const products: Product[] = [
   {
     id: "bow-collar-blouse",
@@ -140,3 +149,25 @@ export const products: Product[] = [
 ];
 
 export const getProduct = (id: string) => products.find((p) => p.id === id);
+
+export const bundles: Bundle[] = [
+  {
+    id: "SET-RIBBON-PLEATED",
+    name: "Ribbon Blouse + Pleated Skirt Set",
+    productIds: ["bow-collar-blouse", "pleated-mini-skirt"],
+    discount: 20,
+  },
+];
+
+export const getBundle = (id: string) => bundles.find((b) => b.id === id);
+
+/** Find a bundle that contains this product (returns the first match). */
+export const findBundleFor = (productId: string) =>
+  bundles.find((b) => b.productIds.includes(productId));
+
+export const bundleMemberPriceSum = (bundle: Bundle) =>
+  bundle.productIds.reduce((sum, pid) => sum + (getProduct(pid)?.price ?? 0), 0);
+
+export const bundlePrice = (bundle: Bundle) =>
+  Math.max(0, bundleMemberPriceSum(bundle) - bundle.discount);
+
