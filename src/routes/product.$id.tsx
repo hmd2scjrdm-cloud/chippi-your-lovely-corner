@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { Minus, Plus, Check } from "lucide-react";
-import { getProduct, products, findBundleFor, bundlePrice, bundleMemberPriceSum } from "@/lib/products";
+import { categoryDetails, getProduct, products, findBundleFor, bundlePrice, bundleMemberPriceSum } from "@/lib/products";
+import { categoryLabel, copy, useLanguage } from "@/lib/language";
 import { ProductCard } from "@/components/ProductCard";
 import { useCart } from "@/lib/cart";
 
@@ -44,6 +45,8 @@ export const Route = createFileRoute("/product/$id")({
 function ProductPage() {
   const { id } = Route.useParams();
   const product = getProduct(id)!;
+  const language = useLanguage((s) => s.language);
+  const t = copy[language];
   const [size, setSize] = useState(product.sizes[0]);
   const [color, setColor] = useState(product.colors[0].name);
   const [qty, setQty] = useState(1);
@@ -52,6 +55,7 @@ function ProductPage() {
   const add = useCart((s) => s.add);
 
   const related = products.filter((p) => p.id !== product.id).slice(0, 3);
+  const category = categoryDetails[product.category];
 
   const handleAdd = () => {
     add({
@@ -144,15 +148,18 @@ function ProductPage() {
 
         {/* Details */}
         <div className="md:pt-6">
-          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">{product.category}</p>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+            {categoryLabel(product.category, language)} · {product.category}
+          </p>
           <h1 className="serif text-3xl md:text-4xl leading-tight">{product.name}</h1>
           <p className="mt-3 text-xl text-foreground">RM {product.price.toFixed(2)}</p>
+          <p className="mt-3 text-sm text-primary">{category.tagline}</p>
           <p className="mt-5 text-muted-foreground leading-relaxed">{product.description}</p>
 
           {/* Color */}
           <div className="mt-8">
             <p className="text-xs uppercase tracking-widest mb-3 text-foreground/70">
-              Color · <span className="text-foreground">{color}</span>
+              {t.product.color} · <span className="text-foreground">{color}</span>
             </p>
             <div className="flex gap-2">
               {product.colors.map((c) => (
@@ -172,8 +179,8 @@ function ProductPage() {
           {/* Size */}
           <div className="mt-6">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-xs uppercase tracking-widest text-foreground/70">Size</p>
-              <a href="#size-guide" className="text-xs text-muted-foreground underline underline-offset-4">Size guide</a>
+              <p className="text-xs uppercase tracking-widest text-foreground/70">{t.product.size}</p>
+              <a href="#size-guide" className="text-xs text-muted-foreground underline underline-offset-4">{t.product.sizeGuide}</a>
             </div>
             <div className="flex flex-wrap gap-2">
               {product.sizes.map((s) => (
@@ -205,7 +212,7 @@ function ProductPage() {
               onClick={handleAdd}
               className="flex-1 bg-primary text-primary-foreground py-3 px-6 text-sm tracking-wide rounded-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
             >
-              {added ? <><Check className="h-4 w-4" /> Added</> : "Add to Cart"}
+              {added ? <><Check className="h-4 w-4" /> {t.product.added}</> : t.product.addToCart}
             </button>
           </div>
 
@@ -301,7 +308,7 @@ function ProductPage() {
           onClick={handleAdd}
           className="flex-1 bg-primary text-primary-foreground py-3 text-sm rounded-sm flex items-center justify-center gap-2"
         >
-          {added ? <><Check className="h-4 w-4" /> Added</> : `Add · RM ${(product.price * qty).toFixed(2)}`}
+          {added ? <><Check className="h-4 w-4" /> {t.product.added}</> : `${t.product.addToCart} · RM ${(product.price * qty).toFixed(2)}`}
         </button>
       </div>
     </div>

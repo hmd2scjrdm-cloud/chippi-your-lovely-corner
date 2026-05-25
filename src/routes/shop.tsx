@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { products, type Category, collectionList, collectionInfo } from "@/lib/products";
+import { Search, X } from "lucide-react";
+import { categoryDetails, products, type Category } from "@/lib/products";
+import { categoryLabel, copy, useLanguage } from "@/lib/language";
 import { ProductCard } from "@/components/ProductCard";
 import { z } from "zod";
 
@@ -9,9 +11,10 @@ type SortValue = (typeof sortValues)[number];
 
 const shopSearch = z.object({
   cat: z
-    .union([z.enum(["Tops", "Dresses", "Skirts", "Bow Series", "new"]), z.literal("")])
+    .union([z.enum(["Bebe Bow", "Le Garden", "The Daily", "new"]), z.literal("")])
     .optional(),
-  collection: z.enum(collectionList).optional(),
+  q: z.string().optional(),
+  color: z.string().optional(),
   sort: z.enum(sortValues).optional(),
 });
 
@@ -22,36 +25,64 @@ export const Route = createFileRoute("/shop")({
   head: () => ({
     meta: [
       { title: "Shop — Cippy" },
-      { name: "description", content: "Browse all Cippy pieces. Dresses, tops, skirts and bows. Ships across Malaysia." },
+      { name: "description", content: "浏览 Chippi 的贝贝蝴蝶结、花园系列与日常系列。马来西亚全境配送。" },
       { property: "og:title", content: "Shop — Cippy" },
-      { property: "og:description", content: "Browse all Cippy pieces. Dresses, tops, skirts and bows." },
+      { property: "og:description", content: "浏览 Chippi 的贝贝蝴蝶结、花园系列与日常系列。" },
     ],
   }),
   component: Shop,
 });
 
-const categories: (Category | "All" | "new")[] = ["All", "new", "Tops", "Dresses", "Skirts", "Bow Series"];
+const categories: (Category | "All" | "new")[] = ["All", "new", "Bebe Bow", "Le Garden", "The Daily"];
 
-const sortOptions: { value: SortValue; label: string }[] = [
-  { value: "featured", label: "Featured" },
-  { value: "new", label: "New arrivals" },
-  { value: "best", label: "Best sellers" },
-  { value: "price-asc", label: "Price: Low to High" },
-  { value: "price-desc", label: "Price: High to Low" },
+const sortOptions: { value: SortValue; labelKey: keyof typeof copy.zh.shop.sorts }[] = [
+  { value: "featured", labelKey: "featured" },
+  { value: "new", labelKey: "new" },
+  { value: "best", labelKey: "best" },
+  { value: "price-asc", labelKey: "priceAsc" },
+  { value: "price-desc", labelKey: "priceDesc" },
 ];
 
 function Shop() {
-  const { cat, collection, sort } = Route.useSearch() as ShopSearch;
+  const { cat, sort, q, color } = Route.useSearch();
   const navigate = useNavigate({ from: "/shop" });
+  const language = useLanguage((s) => s.language);
+  const t = copy[language];
   const active = cat || "All";
   const activeSort: SortValue = sort ?? "featured";
+  const searchTerm = q?.trim() ?? "";
+  const activeColor = color?.trim() ?? "";
+
+  const colorOptions = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          products.flatMap((p) => p.colors).map((c) => [c.name, c])
+        ).values()
+      ),
+    []
+  );
 
   const filtered = useMemo(() => {
     const base = products.filter((p) => {
-      if (collection && !p.collections?.includes(collection)) return false;
-      if (!cat) return true;
+      if (!cat || cat === "") return true;
       if (cat === "new") return p.isNew;
       return p.category === cat;
+    }).filter((p) => {
+      if (activeColor && !p.colors.some((c) => c.name === activeColor)) return false;
+      if (!searchTerm) return true;
+      const haystack = [
+        p.name,
+        p.description,
+        p.fabric,
+        p.category,
+        categoryDetails[p.category].nameZh,
+        categoryDetails[p.category].tagline,
+        ...p.colors.map((c) => c.name),
+      ]
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(searchTerm.toLowerCase());
     });
     const sorted = [...base];
     switch (activeSort) {
@@ -69,57 +100,66 @@ function Shop() {
         break;
     }
     return sorted;
-  }, [cat, collection, activeSort]);
+  }, [cat, activeColor, searchTerm, activeSort]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-8 py-10 md:py-16 animate-fade-in">
       <div className="mb-8 md:mb-12">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
-          {collection ? "Collection" : "Shop"}
-        </p>
-        <h1 className="serif text-4xl md:text-5xl">{collection ?? "All pieces"}</h1>
-        {collection && (
-          <p className="mt-3 text-muted-foreground">{collectionInfo[collection].tagline}</p>
-        )}
+        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">{t.shop.eyebrow}</p>
+        <h1 className="serif text-4xl md:text-5xl">{t.shop.title}</h1>
       </div>
 
-      {/* Collections strip */}
-      <div className="flex gap-2 mb-3 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none">
-        <Link
-          to="/shop"
-          search={(prev: ShopSearch) => ({ ...prev, collection: undefined })}
-          className={`whitespace-nowrap px-3 py-1.5 text-xs uppercase tracking-widest rounded-full border transition-colors ${
-            !collection
-              ? "bg-primary/10 border-primary text-primary"
-              : "border-border text-muted-foreground hover:border-foreground/40"
-          }`}
-        >
-          All series
-        </Link>
-        {collectionList.map((c) => {
-          const isActive = collection === c;
-          return (
-            <Link
-              key={c}
-              to="/shop"
-              search={(prev: ShopSearch) => ({ ...prev, collection: c })}
-              className={`whitespace-nowrap px-3 py-1.5 text-xs uppercase tracking-widest rounded-full border transition-colors ${
-                isActive
-                  ? "bg-primary/10 border-primary text-primary"
-                  : "border-border text-muted-foreground hover:border-foreground/40"
-              }`}
+      <div className="mb-5 grid gap-3 md:grid-cols-[1fr_auto]">
+        <label className="relative block">
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={q ?? ""}
+            onChange={(e) => {
+              const next = e.target.value;
+              navigate({ search: (prev: ShopSearch) => ({ ...prev, q: next || undefined }) });
+            }}
+            placeholder={t.shop.searchPlaceholder}
+            className="h-11 w-full rounded-full border border-border bg-background pl-11 pr-11 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-foreground/40"
+          />
+          {q && (
+            <button
+              type="button"
+              onClick={() => navigate({ search: (prev: ShopSearch) => ({ ...prev, q: undefined }) })}
+              className="absolute right-3 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground"
+              aria-label="Clear search"
             >
-              {c}
-            </Link>
-          );
-        })}
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <span className="hidden text-muted-foreground sm:inline">{t.shop.sortBy}</span>
+          <select
+            value={activeSort}
+            onChange={(e) => {
+              const next = e.target.value as SortValue;
+              navigate({
+                search: (prev: ShopSearch) => ({
+                  ...prev,
+                  sort: next === "featured" ? undefined : next,
+                }),
+              });
+            }}
+            className="h-11 rounded-full border border-border bg-background px-4 text-sm outline-none focus:border-foreground/40 cursor-pointer"
+          >
+            {sortOptions.map((o) => (
+              <option key={o.value} value={o.value}>
+                {t.shop.sorts[o.labelKey]}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
-
 
       <div className="flex gap-2 mb-6 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none">
         {categories.map((c) => {
           const isActive = active === c;
-          const label = c === "new" ? "New" : c;
+          const label = c === "All" ? t.shop.all : c === "new" ? t.nav.new : categoryLabel(c, language);
           return (
             <Link
               key={c}
@@ -140,34 +180,50 @@ function Shop() {
         })}
       </div>
 
-      <div className="flex items-center justify-between mb-8 md:mb-10">
-        <p className="text-xs text-muted-foreground">{filtered.length} pieces</p>
-        <label className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground hidden sm:inline">Sort by</span>
-          <select
-            value={activeSort}
-            onChange={(e) => {
-              const next = e.target.value as SortValue;
-              navigate({
-                search: (prev: ShopSearch) => ({
-                  ...prev,
-                  sort: next === "featured" ? undefined : next,
-                }),
-              });
-            }}
-            className="bg-transparent border border-border rounded-full px-4 py-2 text-sm focus:outline-none focus:border-foreground/40 cursor-pointer"
+      <div className="mb-8 md:mb-10">
+        <div className="mb-3 flex items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground">{filtered.length} {t.shop.pieces}</p>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">{t.shop.colors}</p>
+        </div>
+        <div className="flex gap-2 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none">
+          <button
+            type="button"
+            onClick={() => navigate({ search: (prev: ShopSearch) => ({ ...prev, color: undefined }) })}
+            className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm transition-colors ${
+              !activeColor
+                ? "border-foreground bg-foreground text-background"
+                : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground"
+            }`}
           >
-            {sortOptions.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </label>
+            {t.shop.allColors}
+          </button>
+          {colorOptions.map((c) => (
+            <button
+              key={c.name}
+              type="button"
+              onClick={() =>
+                navigate({
+                  search: (prev: ShopSearch) => ({
+                    ...prev,
+                    color: activeColor === c.name ? undefined : c.name,
+                  }),
+                })
+              }
+              className={`inline-flex items-center gap-2 whitespace-nowrap rounded-full border px-3 py-2 text-sm transition-colors ${
+                activeColor === c.name
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground"
+              }`}
+            >
+              <span className="h-3.5 w-3.5 rounded-full border border-border/70" style={{ backgroundColor: c.hex }} />
+              {c.name}
+            </button>
+          ))}
+        </div>
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-muted-foreground py-20 text-center">Nothing here yet — check back soon.</p>
+        <p className="text-muted-foreground py-20 text-center">{t.shop.empty}</p>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-14">
           {filtered.map((p) => (

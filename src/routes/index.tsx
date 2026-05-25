@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { products } from "@/lib/products";
+import { categoryDetails, products } from "@/lib/products";
+import { categoryLabel, copy, useLanguage } from "@/lib/language";
 import { ProductCard } from "@/components/ProductCard";
 import hero from "@/assets/hero.jpg";
 import packaging from "@/assets/packaging.jpg";
@@ -24,9 +25,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const language = useLanguage((s) => s.language);
+  const t = copy[language];
   const newArrivals = products.filter((p) => p.isNew).slice(0, 1)[0];
   const bestSeller = products.filter((p) => p.isBest).slice(0, 1)[0];
-  const bowProduct = products.find((p) => p.category === "Bow Series")!;
+  const bebeBowProduct = products.find((p) => p.category === "Bebe Bow")!;
+  const bebeBow = categoryDetails["Bebe Bow"];
+  const collections = (["Bebe Bow", "Le Garden", "The Daily"] as const).map((category) => ({
+    category,
+    product: products.find((p) => p.category === category)!,
+    detail: categoryDetails[category],
+  }));
   const featured = products.slice(0, 4);
   const igPosts = [ig1, ig2, ig3, ig4, ig5, ig6];
 
@@ -45,21 +54,49 @@ function Home() {
         <div className="relative h-full mx-auto max-w-7xl px-6 md:px-8 flex items-end pb-16 md:pb-24">
           <div className="max-w-xl">
             <p className="text-xs uppercase tracking-[0.25em] text-background/90 mb-3">
-              Spring Edit · 2026
+              {t.home.eyebrow}
             </p>
             <h1 className="serif text-5xl md:text-7xl text-background leading-[1.05]">
-              For every
+              {t.home.titleTop}
               <br />
-              <em className="not-italic text-background">lovely</em> moment.
+              <em className="not-italic text-background">{t.home.titleBottom}</em>
             </h1>
             <div className="mt-8 flex gap-3">
               <Link
                 to="/shop"
                 className="bg-background text-foreground px-7 py-3 text-sm tracking-wide hover:bg-background/90 transition-colors rounded-sm"
               >
-                Shop the Edit
+                {t.home.cta}
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Collection mood */}
+      <section className="border-y border-border/60 bg-background">
+        <div className="mx-auto max-w-7xl px-4 md:px-8 py-10 md:py-14">
+          <div className="mb-8 max-w-2xl">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">{t.home.brandEyebrow}</p>
+            <h2 className="serif text-3xl md:text-4xl leading-tight">{t.home.brandTitle}</h2>
+            <p className="mt-4 text-sm md:text-base leading-relaxed text-muted-foreground">{t.home.brandText}</p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            {collections.map(({ category, product, detail }) => (
+              <Link
+                key={category}
+                to="/shop"
+                search={{ cat: category }}
+                className="group grid grid-cols-[96px_1fr] gap-4 rounded-md border border-border/70 bg-card/70 p-3 hover:border-primary/50 transition-colors"
+              >
+                <img src={product.images[0]} alt={categoryLabel(category, language)} className="h-24 w-24 rounded-sm object-cover" />
+                <div className="min-w-0 self-center">
+                  <p className="text-[10px] uppercase tracking-widest text-primary">{category}</p>
+                  <h3 className="serif text-xl">{categoryLabel(category, language)}</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{detail.tagline}</p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -67,9 +104,9 @@ function Home() {
       {/* Bento Grid */}
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-16 md:py-24">
         <div className="mb-10 flex items-end justify-between">
-          <h2 className="serif text-3xl md:text-4xl">Curated for you</h2>
+          <h2 className="serif text-3xl md:text-4xl">{t.home.curated}</h2>
           <Link to="/shop" className="text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline">
-            View all →
+            {t.home.viewAll} →
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 md:grid-rows-2 gap-3 md:gap-4 md:h-[600px]">
@@ -81,7 +118,7 @@ function Home() {
             <img src={newArrivals.images[1]} alt={newArrivals.name} loading="lazy" className="h-full w-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 to-transparent" />
             <div className="absolute bottom-5 left-5 text-background">
-              <p className="text-[10px] uppercase tracking-widest opacity-90">New Arrivals</p>
+              <p className="text-[10px] uppercase tracking-widest opacity-90">{t.home.newArrivals}</p>
               <h3 className="serif text-2xl md:text-3xl mt-1">{newArrivals.name}</h3>
             </div>
           </Link>
@@ -93,27 +130,28 @@ function Home() {
             <img src={bestSeller.images[0]} alt={bestSeller.name} loading="lazy" className="h-full w-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
             <div className="absolute inset-0 bg-gradient-to-r from-foreground/30 to-transparent" />
             <div className="absolute bottom-4 left-4 text-background">
-              <p className="text-[10px] uppercase tracking-widest opacity-90">Best Seller</p>
+              <p className="text-[10px] uppercase tracking-widest opacity-90">{t.home.bestSeller}</p>
               <h3 className="serif text-xl mt-0.5">{bestSeller.name}</h3>
             </div>
           </Link>
           <Link
             to="/shop"
-            search={{ cat: "Bow Series" }}
+            search={{ cat: "Bebe Bow" }}
             className="relative overflow-hidden rounded-md group bg-accent/40 aspect-square md:aspect-auto"
           >
-            <img src={bowProduct.images[0]} alt="Bow Series" loading="lazy" className="h-full w-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
+            <img src={bebeBowProduct.images[0]} alt={bebeBow.nameZh} loading="lazy" className="h-full w-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 to-transparent" />
             <div className="absolute bottom-4 left-4 text-background">
-              <p className="text-[10px] uppercase tracking-widest opacity-90">Collection</p>
-              <h3 className="serif text-xl mt-0.5">Bow Series</h3>
+              <p className="text-[10px] uppercase tracking-widest opacity-90">{bebeBowProduct.category}</p>
+              <h3 className="serif text-xl mt-0.5">{categoryLabel("Bebe Bow", language)}</h3>
+              <p className="mt-1 max-w-[12rem] text-xs leading-relaxed opacity-90">{bebeBow.tagline}</p>
             </div>
           </Link>
           <div className="relative overflow-hidden rounded-md bg-gradient-soft aspect-square md:aspect-auto p-6 flex flex-col justify-between">
             <p className="text-[10px] uppercase tracking-widest text-foreground/70">Made for KL</p>
             <div>
-              <h3 className="serif text-2xl leading-tight">Ready stock<br/>in PJ.</h3>
-              <p className="text-xs text-muted-foreground mt-2">Ships in 24h via J&T.</p>
+              <h3 className="serif text-2xl leading-tight">{t.home.readyTitle}</h3>
+              <p className="text-xs text-muted-foreground mt-2">{t.home.readyText}</p>
             </div>
           </div>
         </div>
@@ -122,8 +160,8 @@ function Home() {
       {/* Featured products */}
       <section className="mx-auto max-w-7xl px-4 md:px-8 pb-16 md:pb-24">
         <div className="mb-10">
-          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Featured</p>
-          <h2 className="serif text-3xl md:text-4xl">The Soft List</h2>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">{t.home.featuredEyebrow}</p>
+          <h2 className="serif text-3xl md:text-4xl">{t.home.featuredTitle}</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
           {featured.map((p) => (
@@ -137,10 +175,10 @@ function Home() {
         <div className="mx-auto max-w-7xl px-4 md:px-8 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
           <img src={packaging} alt="Cippy packaging" loading="lazy" width={1200} height={900} className="w-full rounded-md shadow-soft" />
           <div>
-            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">The Unboxing</p>
-            <h2 className="serif text-3xl md:text-4xl leading-tight">A little ceremony,<br/>in every parcel.</h2>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">{t.home.packagingEyebrow}</p>
+            <h2 className="serif text-3xl md:text-4xl leading-tight">{t.home.packagingTitle}</h2>
             <p className="mt-5 text-muted-foreground leading-relaxed">
-              Every Cippy piece arrives wrapped in tissue, tied with a satin ribbon, and folded inside our blush-pink box. Because the moment you open it is part of the outfit too.
+              {t.home.packagingText}
             </p>
           </div>
         </div>
@@ -149,7 +187,7 @@ function Home() {
       {/* Instagram feed */}
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-16 md:py-24">
         <div className="text-center mb-10">
-          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Tag us</p>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">{t.home.tagUs}</p>
           <h2 className="serif text-3xl md:text-4xl">@cippy.my</h2>
         </div>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-1 md:gap-2">

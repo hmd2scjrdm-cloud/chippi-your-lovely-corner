@@ -1,6 +1,10 @@
 import { Instagram } from "lucide-react";
+import { categoryLabel, copy, useLanguage } from "@/lib/language";
 
 export function Footer() {
+  const language = useLanguage((s) => s.language);
+  const t = copy[language];
+
   return (
     <footer className="border-t border-border/60 mt-20 bg-secondary/30">
       <div className="mx-auto max-w-7xl px-4 md:px-8 py-12 grid gap-10 md:grid-cols-4 text-sm">
@@ -11,25 +15,26 @@ export function Footer() {
           </p>
         </div>
         <div>
-          <h4 className="text-xs uppercase tracking-widest mb-3 text-foreground/70">Shop</h4>
+          <h4 className="text-xs uppercase tracking-widest mb-3 text-foreground/70">{t.footer.shop}</h4>
           <ul className="space-y-2 text-muted-foreground">
-            <li>New Arrivals</li>
-            <li>Best Sellers</li>
-            <li>Bow Series</li>
-            <li>Gift Cards</li>
+            <li>{t.footer.newArrivals}</li>
+            <li>{categoryLabel("Bebe Bow", language)}</li>
+            <li>{categoryLabel("Le Garden", language)}</li>
+            <li>{categoryLabel("The Daily", language)}</li>
+            <li>{t.footer.giftCards}</li>
           </ul>
         </div>
         <div>
-          <h4 className="text-xs uppercase tracking-widest mb-3 text-foreground/70">Help</h4>
+          <h4 className="text-xs uppercase tracking-widest mb-3 text-foreground/70">{t.footer.help}</h4>
           <ul className="space-y-2 text-muted-foreground">
-            <li>Size Guide</li>
-            <li>Shipping & Returns</li>
-            <li>FAQ</li>
-            <li>Contact</li>
+            <li>{t.footer.sizeGuide}</li>
+            <li>{t.footer.shipping}</li>
+            <li>{t.footer.faq}</li>
+            <li>{t.footer.contact}</li>
           </ul>
         </div>
         <div>
-          <h4 className="text-xs uppercase tracking-widest mb-3 text-foreground/70">Follow</h4>
+          <h4 className="text-xs uppercase tracking-widest mb-3 text-foreground/70">{t.footer.follow}</h4>
           <a href="#" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground">
             <Instagram className="h-4 w-4" /> @cippy.my
           </a>

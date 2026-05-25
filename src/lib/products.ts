@@ -11,7 +11,25 @@ import p5b from "@/assets/p5b.jpg";
 import p6 from "@/assets/p6.jpg";
 import p6b from "@/assets/p6b.jpg";
 
-export type Category = "Tops" | "Dresses" | "Skirts" | "Bow Series";
+export type Category = "Bebe Bow" | "Le Garden" | "The Daily";
+
+export const categoryDetails: Record<
+  Category,
+  { nameZh: string; tagline: string }
+> = {
+  "Bebe Bow": {
+    nameZh: "贝贝蝴蝶结",
+    tagline: "The signature Chippi look. Small details, big love.",
+  },
+  "Le Garden": {
+    nameZh: "花园系列",
+    tagline: "Blooming in every lovely moment.",
+  },
+  "The Daily": {
+    nameZh: "日常系列",
+    tagline: "Effortless style for your everyday coffee run.",
+  },
+};
 
 /** Curated story series — a product can belong to several at once. */
 export const collectionList = [
@@ -64,7 +82,7 @@ export const products: Product[] = [
     name: "Ribbon Collar Blouse",
     price: 89,
     images: [p1, p1b],
-    category: "Tops",
+    category: "Bebe Bow",
     sizes: ["XS", "S", "M", "L"],
     colors: [
       { name: "Dusty Pink", hex: "#E2B5B0" },
@@ -86,7 +104,7 @@ export const products: Product[] = [
     name: "Pearl Button Pleated Skirt",
     price: 109,
     images: [p2, p2b],
-    category: "Skirts",
+    category: "Bebe Bow",
     sizes: ["XS", "S", "M", "L"],
     colors: [{ name: "Cream", hex: "#F1E9DD" }],
     description:
@@ -104,7 +122,7 @@ export const products: Product[] = [
     name: "Sunday Bow Mini Dress",
     price: 159,
     images: [p3, p3b],
-    category: "Dresses",
+    category: "Le Garden",
     sizes: ["XS", "S", "M", "L"],
     colors: [{ name: "Dusty Pink", hex: "#D9A9A0" }],
     description:
@@ -121,7 +139,7 @@ export const products: Product[] = [
     name: "Pearl Bow Cardigan",
     price: 139,
     images: [p4, p4b],
-    category: "Tops",
+    category: "Le Garden",
     sizes: ["One Size"],
     colors: [{ name: "Cream", hex: "#F4ECDC" }],
     description:
@@ -138,7 +156,7 @@ export const products: Product[] = [
     name: "Satin Bow Trio",
     price: 39,
     images: [p5, p5b],
-    category: "Bow Series",
+    category: "Bebe Bow",
     sizes: ["One Size"],
     colors: [
       { name: "Pink", hex: "#E8A2A2" },
@@ -158,7 +176,7 @@ export const products: Product[] = [
     name: "Latte Check Mini Skirt",
     price: 119,
     images: [p6, p6b],
-    category: "Skirts",
+    category: "The Daily",
     sizes: ["XS", "S", "M", "L"],
     colors: [{ name: "Latte", hex: "#D6BFA0" }],
     description:
@@ -193,4 +211,3 @@ export const bundleMemberPriceSum = (bundle: Bundle) =>
 
 export const bundlePrice = (bundle: Bundle) =>
   Math.max(0, bundleMemberPriceSum(bundle) - bundle.discount);
-

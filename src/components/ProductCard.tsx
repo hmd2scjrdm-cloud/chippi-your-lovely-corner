@@ -1,7 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import type { Product } from "@/lib/products";
+import { categoryLabel, useLanguage } from "@/lib/language";
 
 export function ProductCard({ product }: { product: Product }) {
+  const language = useLanguage((s) => s.language);
+
   return (
     <Link
       to="/product/$id"
@@ -32,7 +35,12 @@ export function ProductCard({ product }: { product: Product }) {
         )}
       </div>
       <div className="pt-3 flex items-start justify-between gap-3">
-        <h3 className="serif text-base leading-tight">{product.name}</h3>
+        <div>
+          <p className="mb-1 text-[10px] uppercase tracking-widest text-muted-foreground">
+            {categoryLabel(product.category, language)}
+          </p>
+          <h3 className="serif text-base leading-tight">{product.name}</h3>
+        </div>
         <span className="text-sm text-muted-foreground whitespace-nowrap">RM {product.price}</span>
       </div>
       <div className="mt-1 flex items-center gap-1.5">
