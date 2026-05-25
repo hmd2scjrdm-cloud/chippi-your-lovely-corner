@@ -167,6 +167,7 @@ export const products: Product[] = [
     care: "Dry clean recommended",
     modelInfo: "Model is 166cm / 47kg, wearing size S",
     staffReview: "Staff D (160cm / 52kg) wears S — sits at the natural waist.",
+    collections: ["Café Date", "Office Soft"],
   },
 ];
 
