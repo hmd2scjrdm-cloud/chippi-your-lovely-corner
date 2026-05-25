@@ -32,6 +32,15 @@ export interface Product {
   pairsWith?: { id: string; label: string }[];
 }
 
+/** Curated combo SKUs — buy the look as a set with a small discount. */
+export interface Bundle {
+  id: string; // SKU
+  name: string;
+  productIds: string[];
+  /** Discount in RM off the sum of member prices. 0 = no discount, just grouped as a set. */
+  discount: number;
+}
+
 export const products: Product[] = [
   {
     id: "bow-collar-blouse",
