@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { products, type Category } from "@/lib/products";
+import { products, type Category, collectionList, collectionInfo } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { z } from "zod";
 
@@ -11,6 +11,7 @@ const shopSearch = z.object({
   cat: z
     .union([z.enum(["Tops", "Dresses", "Skirts", "Bow Series", "new"]), z.literal("")])
     .optional(),
+  collection: z.enum(collectionList).optional(),
   sort: z.enum(sortValues).optional(),
 });
 
