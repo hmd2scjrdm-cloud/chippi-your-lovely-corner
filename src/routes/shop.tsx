@@ -49,7 +49,7 @@ function Shop() {
   const filtered = useMemo(() => {
     const base = products.filter((p) => {
       if (collection && !p.collections?.includes(collection)) return false;
-      if (!cat || cat === "") return true;
+      if (!cat) return true;
       if (cat === "new") return p.isNew;
       return p.category === cat;
     });
