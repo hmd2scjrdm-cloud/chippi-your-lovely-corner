@@ -63,6 +63,11 @@ function CartPage() {
                     <p className="text-xs text-muted-foreground mt-1">
                       {it.color} · {it.size}
                     </p>
+                    {it.bundleId && (
+                      <span className="inline-block mt-1.5 text-[10px] uppercase tracking-widest text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm">
+                        Part of a set
+                      </span>
+                    )}
                   </div>
                   <button onClick={() => remove(it.productId, it.size, it.color)} aria-label="Remove" className="text-muted-foreground hover:text-foreground">
                     <X className="h-4 w-4" />
