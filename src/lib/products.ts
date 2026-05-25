@@ -96,6 +96,7 @@ export const products: Product[] = [
     modelInfo: "Model is 165cm / 50kg, wearing size S",
     staffReview: "Staff B (158cm / 45kg) sizes down to XS for a tailored waist.",
     isNew: true,
+    collections: ["Coquette Garden", "Sunday Brunch", "Office Soft"],
     pairsWith: [{ id: "bow-collar-blouse", label: "Top in photo" }],
   },
   {
