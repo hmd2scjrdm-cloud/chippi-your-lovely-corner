@@ -151,6 +151,7 @@ export const products: Product[] = [
     modelInfo: "One size — adjustable clip",
     staffReview: "We all keep one in our bag. Pin to a tote, a ponytail, or a cardigan.",
     isBest: true,
+    collections: ["Coquette Garden"],
   },
   {
     id: "checkered-mini-skirt",
