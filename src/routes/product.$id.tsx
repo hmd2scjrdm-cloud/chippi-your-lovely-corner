@@ -100,10 +100,6 @@ function ProductPage() {
               </div>
             )}
           </div>
-              height={800}
-              className="h-full w-full object-cover"
-            />
-          </div>
           <div className="flex gap-2">
             {product.images.map((src, i) => (
               <button
