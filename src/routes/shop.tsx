@@ -41,13 +41,14 @@ const sortOptions: { value: SortValue; label: string }[] = [
 ];
 
 function Shop() {
-  const { cat, sort } = Route.useSearch();
+  const { cat, collection, sort } = Route.useSearch();
   const navigate = useNavigate({ from: "/shop" });
   const active = cat || "All";
   const activeSort: SortValue = sort ?? "featured";
 
   const filtered = useMemo(() => {
     const base = products.filter((p) => {
+      if (collection && !p.collections?.includes(collection)) return false;
       if (!cat || cat === "") return true;
       if (cat === "new") return p.isNew;
       return p.category === cat;
@@ -68,14 +69,52 @@ function Shop() {
         break;
     }
     return sorted;
-  }, [cat, activeSort]);
+  }, [cat, collection, activeSort]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-8 py-10 md:py-16 animate-fade-in">
       <div className="mb-8 md:mb-12">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Shop</p>
-        <h1 className="serif text-4xl md:text-5xl">All pieces</h1>
+        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+          {collection ? "Collection" : "Shop"}
+        </p>
+        <h1 className="serif text-4xl md:text-5xl">{collection ?? "All pieces"}</h1>
+        {collection && (
+          <p className="mt-3 text-muted-foreground">{collectionInfo[collection].tagline}</p>
+        )}
       </div>
+
+      {/* Collections strip */}
+      <div className="flex gap-2 mb-3 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none">
+        <Link
+          to="/shop"
+          search={(prev: ShopSearch) => ({ ...prev, collection: undefined })}
+          className={`whitespace-nowrap px-3 py-1.5 text-xs uppercase tracking-widest rounded-full border transition-colors ${
+            !collection
+              ? "bg-primary/10 border-primary text-primary"
+              : "border-border text-muted-foreground hover:border-foreground/40"
+          }`}
+        >
+          All series
+        </Link>
+        {collectionList.map((c) => {
+          const isActive = collection === c;
+          return (
+            <Link
+              key={c}
+              to="/shop"
+              search={(prev: ShopSearch) => ({ ...prev, collection: c })}
+              className={`whitespace-nowrap px-3 py-1.5 text-xs uppercase tracking-widest rounded-full border transition-colors ${
+                isActive
+                  ? "bg-primary/10 border-primary text-primary"
+                  : "border-border text-muted-foreground hover:border-foreground/40"
+              }`}
+            >
+              {c}
+            </Link>
+          );
+        })}
+      </div>
+
 
       <div className="flex gap-2 mb-6 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none">
         {categories.map((c) => {
